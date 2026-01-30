@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS products (
+  name TEXT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS inventory (
+  name TEXT PRIMARY KEY,
+  quantity INTEGER NOT NULL,
+  FOREIGN KEY (name)
+    REFERENCES products(name)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
