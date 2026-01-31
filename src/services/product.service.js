@@ -9,9 +9,7 @@ export function createProduct(product) {
   const result = ProductSchema.safeParse(product);
 
   if (!result.success) {
-    const err = new Error(
-      'Some of the inventory items are missing attribute: "name" or "quantity"'
-    );
+    const err = new Error("invalid product, name is missing");
     err.status = 400;
     throw err;
   }
@@ -19,8 +17,11 @@ export function createProduct(product) {
   try {
     productRepo.insertProduct(product.name);
   } catch (error) {
-    if (error.code === "SQLITE_CONSTRAINT_PRIMARYKEY" || error.code === "SQLITE_CONSTRAINT_UNIQUE") {
-      throw new Error("product name already exists");
+    if (error.code === "SQLITE_CONSTRAINT_PRIMARYKEY" || error.code === "SQLITE_CONSTRAINT_UNIQUE"
+    ) {
+      const err = new Error("product name already exists");
+      err.status = 400;
+      throw err;
     }
     throw error;
   }
@@ -30,18 +31,18 @@ export function createProduct(product) {
 
 export function updateProduct(oldName, newName) {
   if (!oldName || !newName) {
-    const e = new Error("invalid update, oldName and newName are required");
-    e.status = 400;
-    throw e;
+    const err = new Error("invalid update, oldName and newName are required");
+    err.status = 400;
+    throw err;
   }
 
   try {
     const changes = productRepo.updateProductName(oldName, newName);
 
     if (changes === 0) {
-      const e = new Error("product not found");
-      e.status = 404;
-      throw e;
+      const err = new Error("product not found");
+      err.status = 404;
+      throw err;
     }
   } catch (err) {
     if (err.code === "SQLITE_CONSTRAINT_PRIMARYKEY" || err.code === "SQLITE_CONSTRAINT_UNIQUE") {
@@ -57,21 +58,20 @@ export function updateProduct(oldName, newName) {
 
 export function deleteProduct(name) {
   if (!name) {
-    const e = new Error("invalid delete, name is required");
-    e.status = 400;
-    throw e;
+    const err = new Error("invalid delete, name is required");
+    err.status = 400;
+    throw err;
   }
 
   try {
     const changes = productRepo.deleteProduct(name);
 
     if (changes === 0) {
-      const e = new Error("product not found");
-      e.status = 404;
-      throw e;
+      const err = new Error("product not found");
+      err.status = 404;
+      throw err;
     }
   } catch (err) {
-    // If inventory has FK referencing products, deleting a product used in inventory will fail
     if (err.code === "SQLITE_CONSTRAINT_FOREIGNKEY" || err.code === "SQLITE_CONSTRAINT") {
       const e = new Error("cannot delete product that exists in inventory");
       e.status = 409;
