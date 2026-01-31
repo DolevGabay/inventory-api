@@ -48,3 +48,7 @@ npm test
 ## Design & Architecture
 
 See [docs/architecture.md](docs/architecture.md) for design decisions and system structure.
+
+## Chat GPT Prompts
+
+See [docs/prompts.md](docs/peompts.md).
