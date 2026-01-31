@@ -51,4 +51,4 @@ See [docs/architecture.md](docs/architecture.md) for design decisions and system
 
 ## Chat GPT Prompts
 
-See [docs/prompts.md](docs/peompts.md).
+See [docs/prompts.md](docs/prompts.md).
